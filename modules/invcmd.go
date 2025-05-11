@@ -14,7 +14,6 @@ func CheckInvalidCommand(target string) (string, float64) {
 	randomDelay := getRandomDelay3(500, 3000)
 	time.Sleep(randomDelay)
 
-	// Используем math/rand для генерации случайных чисел
 	conn, err := net.DialTimeout("tcp", target, time.Duration(3+rand.Intn(4))*time.Second)
 	if err != nil {
 		return fmt.Sprintf("❌ Connection error: %v", err), 0
