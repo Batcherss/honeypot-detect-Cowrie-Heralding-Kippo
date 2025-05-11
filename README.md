@@ -12,16 +12,17 @@ PotBuster performs multiple active checks against an SSH server, then calculates
 
 ### 🔬 Included Checks:
 
-| Check              | Description                                                                  |
-| ------------------ | ---------------------------------------------------------------------------- |
-| `Banner Check`     | Analyzes SSH server banner for known honeypot signatures or anomalies        |
-| `Delay Check`      | Measures response delay — honeypots often have slower or inconsistent times  |
-| `Disconnect Check` | Sends dummy input and observes disconnect behavior                           |
-| `Help Check`       | Sends `help` or `?` and checks for unexpected responses                      |
-| `Invalid Command`  | Sends garbage to see how server reacts (some honeypots "respond nicely")     |
-| `None Auth Check`  | Tries to authenticate with no credentials — real SSH servers deny properly   |
-| `Protocol Solver`  | Sends random SSH version string — real servers reject, honeypots often don't |
-| `Trash Send`       | Sends invalid binary/junk data to see if server responds "too politely"      |
+| Check              | Description                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------|
+| `Banner Check`     | Analyzes SSH server banner for known honeypot signatures or anomalies                     |
+| `Delay Check`      | Measures response delay — honeypots often have slower or inconsistent times               |
+| `Disconnect Check` | Sends dummy input and observes disconnect behavior                                        |
+| `Help Check`       | Sends `help` or `?` and checks for unexpected responses                                   |
+| `Invalid Command`  | Sends garbage to see how server reacts (some honeypots "respond nicely")                  |
+| `None Auth Check`  | Tries to authenticate with no credentials — real SSH servers deny properly                |
+| `Protocol Solver`  | Sends random SSH version string — real servers reject, honeypots often don't              |
+| `Trash Send`       | Sends invalid binary/junk data to see if server responds "too politely"                   |
+| `KexAlg resolver`  | Sending ssh-handshake tier-2 and getting "hostkeys , compressions, ciphers, kexAlgs"      |
 
 ---
 ## Video example
