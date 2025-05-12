@@ -13,18 +13,26 @@ func CheckDelay(target string) (float64, error) {
 		return 0, err
 	}
 	defer conn.Close()
-
 	delay := time.Since(start)
-	return float64(delay.Microseconds()) / 1000, nil 
+	return float64(delay.Microseconds()) / 1000.0, nil 
 }
 
 func RunDelayCheck(target string) (string, float64) {
 	delay, err := CheckDelay(target)
 	if err != nil {
-		return "❌ Connect error.", 0
+		return fmt.Sprintf("❌ Connection error: %v", err), 0
 	}
-	if delay > 500 { 
-		return fmt.Sprintf("⏱️ Delay: %.2f ms", delay), 100
+
+	switch {
+	case delay > 1000:
+		return fmt.Sprintf("🚨 HIGH delay: %.2f ms (possible sandbox/honeypot)", delay), 100
+	case delay > 700:
+		return fmt.Sprintf("⚠️ Suspicious delay: %.2f ms", delay), 75
+	case delay > 500:
+		return fmt.Sprintf("⚠️ Slightly high delay: %.2f ms", delay), 50
+	case delay > 250:
+		return fmt.Sprintf("📶 Normal delay: %.2f ms", delay), 25
+	default:
+		return fmt.Sprintf("📶 Fast response: %.2f ms", delay), 10
 	}
-	return fmt.Sprintf("⏱️ Recorded delay: %.2f ms", delay), 35
 }
