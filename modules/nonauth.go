@@ -2,22 +2,32 @@ package modules
 
 import (
 	"bytes"
-	crand "crypto/rand" 
+	crand "crypto/rand"
 	"fmt"
 	"math/big"
-	mrand "math/rand" 
+	mrand "math/rand"
 	"net"
+	"strings"
 	"time"
 )
 
 func CheckNoneAuth(target string) (string, float64) {
-	time.Sleep(getRandomDelay1(1000, 5000)) 
+	time.Sleep(getRandomDelay1(1000, 5000))
+
 	conn, err := net.DialTimeout("tcp", target, time.Duration(3+mrand.Intn(4))*time.Second)
 	if err != nil {
 		return fmt.Sprintf("❌ Connection failed: %v", err), 0
 	}
 	defer conn.Close()
-	conn.SetDeadline(time.Now().Add(5 * time.Second))
+	conn.SetDeadline(time.Now().Add(6 * time.Second))
+
+	serverBanner := make([]byte, 256)
+	n, err := conn.Read(serverBanner)
+	if err != nil || !bytes.HasPrefix(serverBanner, []byte("SSH-")) {
+		return "❌ Invalid or no SSH banner received", 0
+	}
+	trimmedBanner := strings.TrimSpace(string(serverBanner[:n]))
+
 	clientBanners := []string{
 		"SSH-2.0-OpenSSH_8.9p1",
 		"SSH-2.0-PuTTY_Release_0.76",
@@ -25,19 +35,36 @@ func CheckNoneAuth(target string) (string, float64) {
 	}
 	banner := clientBanners[mrand.Intn(len(clientBanners))] + "\r\n"
 	conn.Write([]byte(banner))
-	time.Sleep(getRandomDelay1(200, 1000))
-	noneAuthPacket := []byte{
-		0x00, 0x00, 0x00, 0x14, 
-		0x06,                     
-		0x00, 0x00, 0x00, 0x04,  
-		0x6e, 0x6f, 0x6e, 0x65, 
-	}
 
-	randByte, _ := crand.Int(crand.Reader, big.NewInt(256))
-	noneAuthPacket[5] = byte(randByte.Int64() % 16) 
-	conn.Write(noneAuthPacket)
+	time.Sleep(getRandomDelay1(200, 1000))
+
+	username := randomUsername()
+	usernameLen := len(username)
+
+	packetLen := 1 + 4 + usernameLen // packet_type(1) + length(4) + username
+	totalLen := packetLen + 4        // + length prefix
+	packet := make([]byte, totalLen)
+
+	packet[0] = byte((packetLen >> 24) & 0xFF)
+	packet[1] = byte((packetLen >> 16) & 0xFF)
+	packet[2] = byte((packetLen >> 8) & 0xFF)
+	packet[3] = byte((packetLen) & 0xFF)
+
+	packet[4] = 0x32 
+	packet[5] = 0x00
+	packet[6] = 0x00
+	packet[7] = 0x00
+	packet[8] = byte(usernameLen)
+
+	copy(packet[9:], []byte(username))
+
+	conn.Write(packet)
+
+	start := time.Now()
 	buf := make([]byte, 1024)
-	n, err := conn.Read(buf)
+	n, err = conn.Read(buf)
+	elapsed := time.Since(start)
+
 	if err != nil {
 		if netErr, ok := err.(net.Error); ok && netErr.Timeout() {
 			return "✅ Timeout (normal behavior)", 10
@@ -68,16 +95,21 @@ func CheckNoneAuth(target string) (string, float64) {
 	switch {
 	case n == 0:
 		return "✅ No response (normal)", 5
-	case response[0] == 0x05: // SSH_MSG_SERVICE_ACCEPT
+	case response[0] == 0x05: 
 		return "⚠️ Accepted 'none' auth (very suspicious)", 90
-	case response[0] == 0x02: // SSH_MSG_DISCONNECT
-		return "✅ Protocol error (normal)", 10
+	case response[0] == 0x02: 
+		return fmt.Sprintf("✅ Disconnect (normal). Banner: %s, Time: %v", trimmedBanner, elapsed), 10
 	default:
-		return fmt.Sprintf("⚠️ Unexpected response: %x", response), 60
+		return fmt.Sprintf("⚠️ Unexpected response: %x (Banner: %s, Time: %v)", response, trimmedBanner, elapsed), 60
 	}
 }
 
 func getRandomDelay1(min, max int) time.Duration {
 	randNum, _ := crand.Int(crand.Reader, big.NewInt(int64(max-min)))
 	return time.Duration(min+int(randNum.Int64())) * time.Millisecond
+}
+
+func randomUsername() string {
+	names := []string{"admin", "root", "test", "ubuntu", "user", "guest", "notgay", "minecraft", "henry", "piterparker", "simpson", "pitergriffin"}
+	return names[mrand.Intn(len(names))]
 }
