@@ -1,4 +1,4 @@
-# PotBuster — SSH Honeypot Detection Tool
+# SSH Honeypot Detect like cowrie.
 ![Repo Size](https://img.shields.io/github/repo-size/Batcherss/sshpotbuster?style=flat) 
 
 PotBuster is a CLI tool for detecting SSH-based honeypots by simulating typical probing behavior and analyzing responses.
@@ -37,7 +37,7 @@ PotBuster performs multiple active checks against an SSH server, then calculates
 2. **Clone the repo**:
 
 ```bash
-git clone https://github.com/Batcherss/potbuster.git
+git clone https://github.com/Batcherss/honeypot-detect-Cowrie-Heralding-Kippo.git
 cd potbuster
 ```
 
