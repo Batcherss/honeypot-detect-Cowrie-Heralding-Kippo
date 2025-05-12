@@ -65,13 +65,5 @@ func RunChecks(ip string) []CheckResult {
 		Score:   int(score),
 	})
 
-	text, score = AnalyzeSSHParams(ip)
-	results = append(results, CheckResult{
-		Name:    `CRYPT PARAM CHECKER`,
-		Details: text,
-		Score:   int(score),
-	})
-
-
 	return results
 }
