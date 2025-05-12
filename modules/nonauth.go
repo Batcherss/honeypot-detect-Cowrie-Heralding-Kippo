@@ -57,7 +57,6 @@ func CheckNoneAuth(target string) (string, float64) {
 	packet[8] = byte(usernameLen)
 
 	copy(packet[9:], []byte(username))
-
 	conn.Write(packet)
 
 	start := time.Now()
