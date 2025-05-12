@@ -22,7 +22,6 @@ func RunDelayCheck(target string) (string, float64) {
 	if err != nil {
 		return fmt.Sprintf("❌ Connection error: %v", err), 0
 	}
-
 	switch {
 	case delay > 1000:
 		return fmt.Sprintf("🚨 HIGH delay: %.2f ms (possible sandbox/honeypot)", delay), 100
