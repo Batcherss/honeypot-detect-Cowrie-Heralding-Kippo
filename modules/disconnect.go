@@ -6,24 +6,27 @@ import (
 	"time"
 )
 
+func getRandomDelay(min, max int) time.Duration {
+	if max <= min {
+		return time.Duration(min) * time.Millisecond
+	}
+	return time.Duration(min+rand.Intn(max-min)) * time.Millisecond
+}
+
 func CheckDisconnect(target string) (string, float64) {
 	reconnectDelay := getRandomDelay(2000, 8000)
-
 	rand.Seed(time.Now().UnixNano())
-
 	conn1, err := net.DialTimeout("tcp", target, time.Duration(3+rand.Intn(3))*time.Second)
 	if err != nil {
 		return "❌ Initial connection failed", 0
 	}
-
+	defer conn1.Close()
 	conn1.SetReadDeadline(time.Now().Add(3 * time.Second))
 	buf := make([]byte, 512)
 	_, err = conn1.Read(buf)
-	hasBanner := err == nil
+	hasBanner := err == nil 
 	conn1.Close()
-
 	time.Sleep(reconnectDelay)
-
 	conn2, err := net.DialTimeout("tcp", target, time.Duration(3+rand.Intn(3))*time.Second)
 	if err != nil {
 		if hasBanner {
@@ -62,11 +65,4 @@ func checkTempBlock(target string) bool {
 		}
 	}
 	return true
-}
-
-func getRandomDelay(min, max int) time.Duration {
-	if max <= min {
-		return time.Duration(min) * time.Millisecond
-	}
-	return time.Duration(min+rand.Intn(max-min)) * time.Millisecond
 }
