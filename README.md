@@ -22,7 +22,6 @@ PotBuster performs multiple active checks against an SSH server, then calculates
 | `None Auth Check`  | Tries to authenticate with no credentials — real SSH servers deny properly                |
 | `Protocol Solver`  | Sends random SSH version string — real servers reject, honeypots often don't              |
 | `Trash Send`       | Sends invalid binary/junk data to see if server responds "too politely"                   |
-| `KexAlg resolver`  | Sending ssh-handshake tier-2 and getting "hostkeys , compressions, ciphers, kexAlgs"      |
 
 ---
 ## Video example
