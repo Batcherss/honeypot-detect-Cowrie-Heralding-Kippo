@@ -91,8 +91,11 @@ func analyzeResponse(resp string, duration int64) (float64, string) {
 
 func isKnownHoneypot(banner string) bool {
 	signatures := []string{
-		"Cowrie", "HonSSH", "HoneyPy", "Kippo", "Dionaea",
-		"Amun", "Glastopf", "Honeyd", "MHN", "T-Pot",
+	    "Cowrie", "HonSSH", "HoneyPy", "Kippo", "Dionaea",
+	    "Amun", "Glastopf", "Honeyd", "MHN", "T-Pot",
+	    "Sniper", "OpenCanary", "Bluepot", "BlackMamba", "SecSpace",
+	    "Raspberry", "SSHpot", "Glorytun", "Netpot", "CowrieSSH",
+	    "Shun", "Honeytrap", "Ghostpot", "Stormpot", "Conpot",
 	}
 	for _, sig := range signatures {
 		if strings.Contains(banner, sig) {
