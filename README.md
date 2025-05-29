@@ -37,7 +37,7 @@ PotBuster performs multiple active checks against an SSH server, then calculates
 
 ```bash
 git clone https://github.com/Batcherss/honeypot-detect-Cowrie-Heralding-Kippo.git
-cd potbuster
+cd honeypot-detect-Cowrie-Heralding-Kippo
 ```
 
 3. **Run the tool**:
