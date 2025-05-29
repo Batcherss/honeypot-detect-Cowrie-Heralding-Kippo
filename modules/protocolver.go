@@ -48,6 +48,21 @@ func CheckProtocolVersion(target string) (string, float64) {
 		{"Invalid protocol", 20, "✅ Normal: Invalid protocol"},
 		{"cowrie", 99, "☣️ Cowrie honeypot detected"},
 		{"kippo", 99, "☣️ Kippo honeypot detected"},
+		{"libssh", 90, "☣️ libssh honeypot detected"},
+		{"OpenSSH_5.", 40, "⚠️ Old OpenSSH version"},
+		{"banner", 50, "⚠️ Suspicious banner response"},
+		{"bad packet length", 85, "☣️ Honeypot bad packet length error"},
+		{"authentication failed", 75, "☣️ Authentication failure (possible honeypot)"},
+		{"invalid command", 95, "☣️ Honeypot shell-like invalid command response"},
+		{"command not found", 95, "☣️ Honeypot shell-like command not found"},
+		{"protocol error", 80, "☣️ Protocol error - suspicious"},
+		{"connection closed by remote host", 60, "⚠️ Connection closed abruptly"},
+		{"warning: possible honeypot", 100, "🚨 Explicit honeypot warning detected"},
+		{"sshguard", 90, "☣️ SSHGuard protection detected"},
+		{"failed password", 70, "☣️ Failed password attempts logged"},
+		{"sshscan", 90, "☣️ SSHScan tool detected (likely honeypot)"},
+		{"tcpwrapped", 80, "⚠️ TCP Wrapped - often used in honeypots"},
+		{"proxy", 50, "⚠️ Proxy detected (could be honeypot)"},
 	}
 
 	for _, indicator := range honeypotIndicators {
